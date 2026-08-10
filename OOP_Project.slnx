@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CarDodge/CarDodge.vcxproj" Id="d891aeda-07e7-4fd9-a7dd-fdb380b44217" />
+</Solution>
