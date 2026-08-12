@@ -1,5 +1,8 @@
 ﻿  main.cpp
-C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(162,29): warning C4834: discarding return value of function with [[nodiscard]] attribute
-C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(220,27): warning C4834: discarding return value of function with [[nodiscard]] attribute
-C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(271,28): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(139,26): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(144,22): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(149,29): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(192,29): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(251,27): warning C4834: discarding return value of function with [[nodiscard]] attribute
+C:\Users\LOQ\source\repos\OOP_Project\CarDodge\main.cpp(302,28): warning C4834: discarding return value of function with [[nodiscard]] attribute
   CarDodge.vcxproj -> C:\Users\LOQ\source\repos\OOP_Project\x64\Debug\CarDodge.exe

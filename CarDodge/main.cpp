@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 #include<vector>
 #include<cstdlib>
 #include<ctime>
@@ -8,14 +9,14 @@
 #include<fstream>
 
 //Global variables
-const float screenH = 600.f;
+const float screenH = 700.f;
 const float screenW = 800.f;
 float roadWidth = 400.f;
 float roadX = (screenW - roadWidth) / 2.f;
 const int numLanes = 4;
 const float laneW = roadWidth / numLanes;
-const float carW = 50.f;
-const float carH = 70.f;
+const float carW = 48.f;
+const float carH = 80.f;
 float roadspeed = 200.f;
 float score = 0.f;
 
@@ -88,8 +89,10 @@ bool checkCollision(const sf::Sprite& a, const sf::Sprite& b) {
 		   boundsB.position.y < boundsA.position.y + boundsA.size.y;
 }
 
-void resetGame(sf::Sprite& car, std::vector<sf::Sprite>& obstacles, float& score, float& roadspeed, float& spawnInterval,float& speed, bool& gameOver, float startCarX,float startCarY)
+void resetGame(sf::Sound& startSound,sf::Music& bgmusic,sf::Sprite& car, std::vector<sf::Sprite>& obstacles, float& score, float& roadspeed, float& spawnInterval,float& speed, bool& gameOver, float startCarX,float startCarY)
 {
+	startSound.play();
+	bgmusic.play();
 	car.setPosition({ startCarX, startCarY });
 	//car.setFillColor(sf::Color::Blue);
 	obstacles.clear();
@@ -107,6 +110,8 @@ int main() {
 	float BaseSpeed = 300.f;
 	float speed = BaseSpeed;
 	bool gameOver = false;
+
+	
 
 	std::ifstream fin("highscore.txt");
 	if (fin.is_open()) {
@@ -126,6 +131,31 @@ int main() {
 	{
 		return -1;
 	}
+
+	//GameSOunds
+
+	//start
+	sf::SoundBuffer startBuffer;
+	startBuffer.loadFromFile("GameSounds/gamestart3.mp3");
+	sf::Sound startSound(startBuffer);
+
+	//bg
+	sf::Music bgmusic;
+	bgmusic.openFromFile("GameSounds/bg1.mp3");
+	bgmusic.setLooping(true);
+
+	//gameover
+	sf::SoundBuffer gameoverBuffer;
+	gameoverBuffer.loadFromFile("GameSounds/gameover1.mp3");
+	sf::Sound gameoverSound(gameoverBuffer);
+
+	//exit
+	//sf::SoundBuffer gameExitBuffer;
+	//gameExitBuffer.loadFromFile("GameSounds/gameover1.mp3");
+	//sf::Sound gameExitSound(gameExitBuffer);
+
+	startSound.play();
+	bgmusic.play();
 
 	//score
 	sf::Text scoreText(font);
@@ -196,7 +226,8 @@ int main() {
 	std::vector<sf::Sprite> obstacles;
 	std::vector<sf::Texture> obstacleTextures;
 	std::vector<std::string> obstacleCarNames = {"carOne.png","carTwo.png","carThree.png","carFour.png","carFive.png","carSix.png",
-												 "carSeven.png","carEight.png","carNine.png","carTen.png","carEleven.png","carTwelve.png",
+												 //"carSeven.png",
+												 "carEight.png","carNine.png","carTen.png","carEleven.png","carTwelve.png",
 												 "carThirteen.png","carFourteen.png","carFifteen.png","carSixteen.png" };
 	for (const std::string& name : obstacleCarNames) {
 		sf::Texture texture;
@@ -337,7 +368,7 @@ int main() {
 			//Keyboard 
 			if (const auto* keypressed = event->getIf<sf::Event::KeyPressed>()) {
 				if (keypressed->code == sf::Keyboard::Key::R) {
-					resetGame(car, obstacles, score, roadspeed, SpawnInterval, speed, gameOver, startCarX,startCarY);
+					resetGame(startSound,bgmusic, car, obstacles, score, roadspeed, SpawnInterval, speed, gameOver, startCarX, startCarY);
 				}
 				if (keypressed->code == sf::Keyboard::Key::Escape) {
 					window.close();
@@ -349,10 +380,10 @@ int main() {
 				if (mousepressed->button == sf::Mouse::Button::Left) {
 					sf::Vector2f mousePos = window.mapPixelToCoords(mousepressed->position);
 					if (retryButton.getGlobalBounds().contains(mousePos)) {
-						resetGame(car, obstacles, score, roadspeed, SpawnInterval, speed, gameOver, startCarX, startCarY);
+						resetGame(startSound,bgmusic,car, obstacles, score, roadspeed, SpawnInterval, speed, gameOver, startCarX, startCarY);
 					}
 					if(exitButton.getGlobalBounds().contains(mousePos))
-					{
+					{				
 						window.close();
 					}
 				}
@@ -398,9 +429,9 @@ int main() {
 
 			//highway scrolling
 			float overalapPX = 150.f;
-			highwayScrollOffset += roadspeed * dt;
-			if (highwayScrollOffset > highwayTexture.getSize().y) {
-				highwayScrollOffset -= static_cast<float>(highwayTexture.getSize().y);
+			highwayScrollOffset -= roadspeed * dt/0.5f;
+			if (highwayScrollOffset < 0.f) {
+				highwayScrollOffset += static_cast<float>(highwayTexture.getSize().y);
 			}
 
 			sf::IntRect hRect = highway.getTextureRect();
@@ -435,7 +466,7 @@ int main() {
 			//}
 
 			//obstacle spawning
-			SpawnInterval -= spawnDecreaseRate * dt;
+			SpawnInterval -= spawnDecreaseRate * (dt/2.f);
 			if (SpawnInterval < minspawnInterval) 
 			{
 				SpawnInterval = minspawnInterval;
@@ -478,6 +509,8 @@ int main() {
 				if(checkCollision(car,obstacle))
 				{
 					gameOver = true;	
+					gameoverSound.play();
+					bgmusic.stop();
 					if (score > highscore) {
 						highscore = score;
 						std::ofstream fout("highscore.txt");
